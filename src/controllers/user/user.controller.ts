@@ -19,9 +19,18 @@ export class UserController {
    * @return {*}  {string}
    * @memberof UserController
    */
-  @Get('/getUsers')
-  public getAllUsers(): string {
-    return 'Here is my list of user accounts!';
+  @Get('/getAll')
+  async getAllUsers(@Res() res, @Body('token') token: string): Promise<any> {
+    if(!token) {
+      throw new BadRequestException('Auth token not provided.');
+    }
+
+    try {
+        
+    }
+    catch(error) {
+      throw error;
+    }
   }
 
   /**
