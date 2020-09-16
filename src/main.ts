@@ -4,6 +4,10 @@ import { MongoClient } from 'mongodb';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // enable cors connections
+  app.enableCors();
+
   await app.listen(5000);
 
    // check connection to the db server.

@@ -23,13 +23,18 @@ export class AuthServiceService implements NestMiddleware {
    */
   use(req, res, next) {
     if(req.body.token) {
-      const username = jwt.verify(req.body.token, this.configService.secret);
-      if(username) {
-        req.username = username;
-        next();
+      try {
+        const username = jwt.verify(req.body.token, this.configService.secret);
+        if(username) {
+          req.username = username;
+          next();
 
+        }
+        else {
+          throw new UnauthorizedException('Token provided is invalid.');
+        }
       }
-      else {
+      catch(error) {
         throw new UnauthorizedException('Token provided is invalid.');
       }
     }

@@ -41,7 +41,7 @@ export class UserController {
    * @return {*}  {Promise<any>}
    * @memberof UserController
    */
-  @Post('/get')
+  @Post('/findUser')
   async getUser(@Res() res, @Body('token') token: string): Promise<any> {
     if(!token) {
       throw new BadRequestException('Auth token not provided.');
