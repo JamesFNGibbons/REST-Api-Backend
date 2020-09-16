@@ -1,3 +1,5 @@
+import { Report } from "./report.interface";
+
 export interface User {
 
   name: String,
@@ -5,7 +7,7 @@ export interface User {
   username: String,
   password: String,
 
-  reports: String,
+  reports: Array<Report>,
   superUser: Boolean,
 
   created: Date
