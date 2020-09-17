@@ -67,6 +67,7 @@ export class AuthController {
 
           // return the auth token.
           res.status(200).send({status: 'ok', authToken: authToken}).end();
+    
         }
         else {
           throw new BadRequestException('Invalid details.');

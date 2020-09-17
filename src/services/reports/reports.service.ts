@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MongodbService } from '../db/mongodb/mongodb.service';
 import { Report } from 'src/interfaces/report.interface';
+import { User } from 'src/interfaces/user.interface';
 
 @Injectable()
 export class ReportsService {
@@ -9,16 +10,47 @@ export class ReportsService {
     private readonly db: MongodbService
   ) {}
 
-
   /**
    *
    *
-   * @return {*}  {Promise<boolean>}
+   * @param {Report} report
+   * @param {User} creatorUser
+   * @return {*}  {Promise<void>}
    * @memberof ReportsService
    */
-  public async create(): Promise<boolean> {
-    
-    return true;
+  public async create(report: Report, creatorUsername: String): Promise<void> {
+    try {
+      if(report && creatorUsername) {
+        const query = await (await this.db.getConnection()).collection('users').findOne({username: creatorUsername});
+        if(query) {
+
+          if(!query.reports) {
+            query.reports = [report];
+          }
+          else {
+            query.reports.push(report);
+          }
+
+          // commit changes to the user object
+          await (await this.db.getConnection()).collection('users').updateOne({
+            username: creatorUsername
+          }, query);
+
+          // done.
+          return;
+
+        }
+        else {
+          throw 'Invalid creator user provided.';
+        }
+      }
+      else {
+        throw 'Cannot create report from null object.';
+      }
+    }
+    catch(error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
 
