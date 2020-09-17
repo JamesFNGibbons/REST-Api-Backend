@@ -38,6 +38,21 @@ export class ReportsController {
    * @return {*}  {Promise<any>}
    * @memberof ReportsController
    */
+  @Post('/updateReport')
+  async updateChangesTorReport(@Req() req, @Res() res, @Body('report') report: Report): Promise<any> {
+
+  }
+
+
+  /**
+   *
+   *
+   * @param {*} req
+   * @param {*} res
+   * @param {Report} report
+   * @return {*}  {Promise<any>}
+   * @memberof ReportsController
+   */
   @Post('/createReport')
   async createAndSaveReport(@Req() req, @Res() res, @Body('report') report: Report): Promise<any> {
     try {
@@ -47,6 +62,7 @@ export class ReportsController {
       res.status(200).send({status: 'ok'}).end();
     }
     catch(error) {
+      console.error(error);
       throw new InternalServerErrorException(error);
     }
   }

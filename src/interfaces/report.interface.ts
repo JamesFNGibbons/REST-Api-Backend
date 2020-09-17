@@ -1,14 +1,18 @@
 import { Customer } from "./customer.interface";
+import { SiteAddress } from "./site-address.interface";
 
 export interface Report {
   
-  customer: Customer,
   creator: String,
-  
+  jobNumber: string,
+
   price: Number,
   startDate: Date,
   endDate: Date,
 
-  description: String
+  description: String,
+
+  customer: Customer,
+  address: SiteAddress
 
 }

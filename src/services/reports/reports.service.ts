@@ -32,7 +32,7 @@ export class ReportsService {
           }
 
           // commit changes to the user object
-          await (await this.db.getConnection()).collection('users').updateOne({
+          await (await this.db.getConnection()).collection('users').update({
             username: creatorUsername
           }, query);
 
