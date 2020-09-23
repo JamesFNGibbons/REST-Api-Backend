@@ -1,6 +1,9 @@
-import { Controller, Req, Res, Post, Body, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Req, Res, Post, Body, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { Report } from 'src/interfaces/report.interface';
 import { ReportsService } from 'src/services/reports/reports.service';
+
+import { ObjectId } from 'mongodb';
+
 
 @Controller('reports')
 export class ReportsController {
@@ -40,7 +43,14 @@ export class ReportsController {
    */
   @Post('/updateReport')
   async updateChangesTorReport(@Req() req, @Res() res, @Body('report') report: Report): Promise<any> {
+    if(report) {
+      const reportObjectId = (report as any)._id;
+      console.log(reportObjectId);
 
+    }
+    else {
+      throw new BadRequestException('Report to update must be provided.');
+    }
   }
 
 

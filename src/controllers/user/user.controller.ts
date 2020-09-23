@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Res, Body, BadRequestException, BadGatewayException } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, BadRequestException, BadGatewayException, Req } from '@nestjs/common';
 import { UserService } from 'src/services/user.service';
 import { ConfigService } from 'src/services/config/config.service';
 
 import * as jwt from 'jsonwebtoken';
+import { User } from 'src/interfaces/user.interface';
 
 @Controller('user')
 export class UserController {
@@ -12,6 +13,7 @@ export class UserController {
     private configService: ConfigService
 
   ){}
+
 
   /**
    *
@@ -32,6 +34,7 @@ export class UserController {
       throw error;
     }
   }
+
 
   /**
    *
@@ -62,6 +65,51 @@ export class UserController {
       else {
         throw new BadRequestException('Invalid auth token.');
       }
+    }
+    catch(error) {
+      throw error;
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @param {*} res
+   * @param {User} account
+   * @return {*}  {Promise<void>}
+   * @memberof UserController
+   */
+  @Post('/createSubAccount')
+  async createSubAccount(@Res() res, @Body('account') account: User): Promise<void> {
+    try {
+      if(await this.userService.create(account)) {
+        res.status(200).send({status: 'ok'}).end();
+      }
+      else {
+        res.status(200).send({status: 'err', accountUsernameUsed: true}).end();
+      }
+    }
+    catch(error) {
+      throw error;
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @param {*} res
+   * @param {string} username
+   * @return {*}  {Promise<void>}
+   * @memberof UserController
+   */
+  @Post('/deleteSubAccount')
+  async deleteSubAccount(@Res() res, @Body('username') username: string): Promise<void> {
+    try {
+      await this.userService.delete(username);
+      res.status(200).send({status: 'ok'}).end();
+
     }
     catch(error) {
       throw error;

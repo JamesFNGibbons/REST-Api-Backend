@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, InternalServerErrorException, BadGatew
 import { User } from 'src/interfaces/user.interface';
 import { MongodbService } from './db/mongodb/mongodb.service';
 import { exception } from 'console';
+import { S_IFBLK } from 'constants';
 
 @Injectable()
 export class UserService {
@@ -14,11 +15,22 @@ export class UserService {
    * @returns {Boolean} status of query.
    */
   async create(user: User): Promise<boolean> {
-    if(!user.created) {
-      user.created = new Date();
-    }
+    try {
 
-    return true;
+      // check if the user already exists with this username.
+      const findExistingUserRequest: any = await (await this.database.getConnection()).collection('users').findOne({username: user.username});
+      if(findExistingUserRequest) {
+        return false;  
+      }
+      else {
+        const insertUserRequest = await (await this.database.getConnection()).collection('users').insertOne(user);
+        return true;
+      }
+
+    }
+    catch(error) {
+      throw new InternalServerErrorException(error);
+    }
   } 
 
 
@@ -30,7 +42,16 @@ export class UserService {
    * @memberof UserService
    */
   async delete(username: string): Promise<boolean> {
-    return true;
+    try {
+
+      // attempt to delete the account from the database.
+      await (await this.database.getConnection()).collection('users').deleteOne({username: username});
+      return true;
+
+    }
+    catch(error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
 

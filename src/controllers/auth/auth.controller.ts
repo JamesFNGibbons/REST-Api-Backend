@@ -24,12 +24,12 @@ export class AuthController {
    * @memberof AuthController
    */
   @Post('/validateAuthToken')
-  validateAuthToken(@Res() res, @Body('token') token): boolean {
+  validateAuthToken(@Res() res, @Body('token') token): void {
     if(token) {
       try {
         const username = jwt.verify(token, this.config.secret);
         if(username) {
-          return true;
+          res.status(200).send({status: 'ok'}).end();
         }
         else {
           throw new UnauthorizedException('Invalid token.');
